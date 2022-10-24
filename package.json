@@ -6,12 +6,17 @@
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
-    "cmake-js": "^6.3.0",
+    "cmake-js": "^7.0.0",
     "node-addon-api": "5.0.0"
   },
   "scripts": {
     "postinstall": "node postinstall.js",
     "test": "node ./examples/buildInfo.js",
-    "build": "cmake-js compile && cp ./build/Release/depthai_node.node ./depthai_node.node"
-  }
+    "build": "cmake-js build && cp ./build/Release/depthai_node.node ./depthai_node.node",
+    "prepare-prebuilds": "yarn run clean && yarn run build && node prepare-prebuilds.js x86_64",
+    "prepare-prebuilds-arm64": "yarn run clean && yarn run build:arm64 && node prepare-prebuilds.js aarch64",
+    "build:arm64": "cmake-js build --CDCMAKE_TOOLCHAIN_FILE=./cmake/toolchain/arm64.cmake",
+    "clean": "cmake-js clean"
+  },
+  "packageManager": "yarn@3.2.4"
 }

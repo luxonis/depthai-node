@@ -5,8 +5,13 @@ const childProcess = require('child_process');
 
 if (fs.existsSync(path.resolve('./prebuilds'))) {
   const arch = childProcess.execSync('uname -m').toString('utf-8').trim();
-  if (fs.existsSync(path.resolve('./discovery.node'))) {
-    fs.unlinkSync(path.resolve('./discovery.node'));
+  if (fs.existsSync(path.resolve('./depthai_node.node'))) {
+    fs.unlinkSync(path.resolve('./depthai_node.node'));
   }
-  fs.linkSync(path.resolve(`./prebuilds/discovery.${arch}.node`), path.resolve('./discovery.node'));
+  const prebuildForArchPath = path.resolve(`./prebuilds/depthai_node.${arch}.node`);
+  if (fs.existsSync(prebuildForArchPath)) {
+    fs.linkSync(prebuildForArchPath, path.resolve('./depthai_node.node'));
+  } else {
+    throw new Error(`prebuild not available for ${arch}`);
+  }
 }

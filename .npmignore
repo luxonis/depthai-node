@@ -1,5 +1,6 @@
 depthai_node.node
 cmake
+sysroot
 depthai-core
 .clang-format
 CMakeLists.txt

@@ -2,3 +2,4 @@ build
 release
 depthai_node.node
 node_modules
+sysroot
