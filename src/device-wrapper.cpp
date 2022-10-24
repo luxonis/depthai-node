@@ -41,8 +41,6 @@ Napi::Array DeviceWrapper::deviceInfosToNode(Napi::Env env, std::vector<dai::Dev
 Napi::String DeviceWrapper::nodeEnumFromState(Napi::Env env, XLinkDeviceState_t state)
 {
     switch (state) {
-        case X_LINK_ANY_STATE:
-            return Napi::String::New(env, "unknown");
         case X_LINK_BOOTED:
             return Napi::String::New(env, "booted");
         case X_LINK_UNBOOTED:
@@ -51,6 +49,9 @@ Napi::String DeviceWrapper::nodeEnumFromState(Napi::Env env, XLinkDeviceState_t 
             return Napi::String::New(env, "bootloader");
         case X_LINK_FLASH_BOOTED:
             return Napi::String::New(env, "flash-booted");
+        case X_LINK_ANY_STATE:
+        default:
+            return Napi::String::New(env, "unknown");
     }
 }
 
@@ -70,6 +71,7 @@ Napi::String DeviceWrapper::nodeEnumFromProtocol(Napi::Env env, XLinkProtocol_t 
         case X_LINK_NMB_OF_PROTOCOLS:
             return Napi::String::New(env, "nmb-of-protocols");
         case X_LINK_ANY_PROTOCOL:
+        default:
             return Napi::String::New(env, "unknown");
     }
 }
@@ -77,12 +79,13 @@ Napi::String DeviceWrapper::nodeEnumFromProtocol(Napi::Env env, XLinkProtocol_t 
 Napi::String DeviceWrapper::nodeEnumFromPlatform(Napi::Env env, XLinkPlatform_t platform)
 {
     switch (platform) {
-        case X_LINK_ANY_PLATFORM:
-            return Napi::String::New(env, "unknown");
         case X_LINK_MYRIAD_2:
             return Napi::String::New(env, "myriad-2");
         case X_LINK_MYRIAD_X:
             return Napi::String::New(env, "myriad-x");
+        case X_LINK_ANY_PLATFORM:
+        default:
+            return Napi::String::New(env, "unknown");
     }
 }
 
@@ -119,5 +122,7 @@ Napi::String DeviceWrapper::nodeEnumFromStatus(Napi::Env env, XLinkError_t statu
             return Napi::String::New(env, "tcp-ip-error");
         case X_LINK_INIT_PCIE_ERROR:
             return Napi::String::New(env, "pcie-error");
+        default:
+            return Napi::String::New(env, "unknown");
     }
 }

@@ -5,16 +5,18 @@ endif()
 cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib)
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain/pic.cmake")
+if (NOT CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain/pic.cmake")
+endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb3")
 
+# For IDE
 if (NOT CMAKE_JS_VERSION)
-    set(CMAKE_JS_VERSION "6.3.0")
-    set(NODE_RUNTIMEVERSION "17.3.1")
+    set(CMAKE_JS_VERSION "7.0.0")
+    set(NODE_RUNTIMEVERSION "18.5.0")
     set(NODE_RUNTIME "node")
     set(NODE_ARCH "x64")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
     set(CMAKE_JS_INC "~/.cmake-js/node-x64/v18.5.0/include/node")
     set(CMAKE_JS_SRC "")
 endif()
@@ -54,13 +56,7 @@ add_definitions(-DNAPI_VERSION=3)
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/node_modules/node-addon-api
-    ${CMAKE_BINARY_DIR}/_deps/libdatachannel-src/include
 )
-if( NODE_RUNTIMEVERSION VERSION_LESS "16.0.0")
-    # For compatibility with Node.js 12
-    # This should be removed along with the napi-thread-safe-callback-cancellable dependency when dropping support at end-of-life
-    target_compile_definitions(${PROJECT_NAME} PRIVATE -DLEGACY_NAPI_THREAD_SAFE_CALLBACK)    
-endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/node_modules/napi-thread-safe-callback-cancellable
