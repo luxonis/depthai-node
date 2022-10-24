@@ -39,12 +39,13 @@ jobs:
           yarn install
           yarn run prepare-prebuilds
           yarn run prepare-prebuilds-arm64
+          yarn run clean
         env:
           CI: true
       - name: Test
         run: |
-          yarn run clean
           yarn install
+          yarn run postinstall
           yarn run test
         env:
           CI: true
