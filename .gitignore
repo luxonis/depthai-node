@@ -1,3 +1,4 @@
 build
 release
-discovery.node
+depthai_node.node
+node_modules

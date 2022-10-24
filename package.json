@@ -7,11 +7,11 @@
   "types": "index.d.ts",
   "dependencies": {
     "cmake-js": "^6.3.0",
-    "node-addon-api": "^4.3.0"
+    "node-addon-api": "5.0.0"
   },
   "scripts": {
     "postinstall": "node postinstall.js",
-    "test": "node discovery.test.js",
-    "compile": "cmake-js compile"
+    "test": "node ./examples/buildInfo.js",
+    "build": "cmake-js compile && cp ./build/Release/depthai_node.node ./depthai_node.node"
   }
 }
