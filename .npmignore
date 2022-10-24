@@ -1,0 +1,9 @@
+discovery.node
+cmake
+depthai-core
+libdatachannel
+.clang-format
+CMakeLists.txt
+build-in-docker.sh
+discovery.cpp
+rtc.cpp
