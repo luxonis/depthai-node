@@ -1,0 +1,4 @@
+[submodule "depthai-core"]
+	path = depthai-core
+	url = https://github.com/luxonis/depthai-core
+	branch = "e170b4d2f1a9b875b3f5629dfb729aa1bd21ea72" # 2.18.0
