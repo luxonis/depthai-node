@@ -8,6 +8,9 @@ set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib)
 if (NOT CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain/pic.cmake")
 endif()
+if (NOT TOOLCHAIN_PREFIX)
+    set(TOOLCHAIN_PREFIX "x86_64-linux-gnu")
+endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb3")
 
