@@ -69,6 +69,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_EXTENSIONS OFF)
 set(LINK_LIBRARIES
     ${CMAKE_JS_LIB}
     depthai::core
+    usb-1.0
 )
 
 if(APPLE)
