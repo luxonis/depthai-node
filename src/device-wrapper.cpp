@@ -1,5 +1,7 @@
 #include "device-wrapper.h"
 
+std::unordered_set<DeviceWrapper *> DeviceWrapper::instances;
+
 Napi::Object DeviceWrapper::Init(Napi::Env env, Napi::Object exports)
 {
     Napi::HandleScope scope(env);
@@ -22,6 +24,19 @@ Napi::Value DeviceWrapper::getAllConnectedDevices(const Napi::CallbackInfo& info
     return DeviceWrapper::deviceInfosToNode(info.Env(), dai::Device::getAllConnectedDevices());
 }
 
+void DeviceWrapper::CloseAll()
+{
+    auto copy(instances);
+    for (auto inst : copy)
+        inst->doClose();
+}
+
+DeviceWrapper::DeviceWrapper(const Napi::CallbackInfo &info) : Napi::ObjectWrap<DeviceWrapper>(info)
+{
+    mDevicePtr = *();
+    instances.insert(this);
+}
+
 Napi::Array DeviceWrapper::deviceInfosToNode(Napi::Env env, std::vector<dai::DeviceInfo> infos)
 {
     auto nodeArray = Napi::Array::New(env, infos.size());
@@ -36,7 +51,7 @@ Napi::Array DeviceWrapper::deviceInfosToNode(Napi::Env env, std::vector<dai::Dev
         nodeArray[i] = deviceInfo;
     }
     return nodeArray;
-} 
+}
 
 Napi::String DeviceWrapper::nodeEnumFromState(Napi::Env env, XLinkDeviceState_t state)
 {
@@ -125,4 +140,14 @@ Napi::String DeviceWrapper::nodeEnumFromStatus(Napi::Env env, XLinkError_t statu
         default:
             return Napi::String::New(env, "unknown");
     }
+}
+
+void DeviceWrapper::doClose()
+{
+    if (mDevicePtr)
+    {
+        mDevicePtr->close();
+    }
+
+    instances.erase(this);
 }

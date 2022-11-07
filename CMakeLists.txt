@@ -48,6 +48,7 @@ add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     src/build-wrapper.cpp
     src/device-wrapper.cpp
+    src/pipeline-wrapper.cpp
     ${CMAKE_JS_SRC}
 )
 
