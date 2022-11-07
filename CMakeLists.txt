@@ -20,7 +20,6 @@ if (NOT CMAKE_JS_VERSION)
     set(CMAKE_JS_INC "~/.cmake-js/node-x64/v18.5.0/include/node")
     set(CMAKE_JS_SRC "")
 endif()
-set(BUILD_SHARED_LIBS OFF)
 
 ## Build dependencies as 'Release' only by default (if not MSVC, as it requires same debug level for libraries to be linked against)
 if(NOT WIN32)
@@ -69,7 +68,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_EXTENSIONS OFF)
 
 set(LINK_LIBRARIES
     ${CMAKE_JS_LIB}
-    depthai::core -static
+    depthai::core
 )
 
 if(APPLE)
