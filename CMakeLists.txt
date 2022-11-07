@@ -42,11 +42,11 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/depthai-core/cmake")
 set(DEPTHAI_OPENCV_SUPPORT OFF CACHE BOOL "" FORCE)
 add_subdirectory(depthai-core)
 
-#find_package(PkgConfig REQUIRED)
-find_library(libusb-1.0 NAMES usb-1.0 PATHS
-    ./libusb/usr/lib
+add_library(usb-1.0 STATIC IMPORTED)
+set_target_properties(usb-1.0 PROPERTIES
+  IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/libusb/usr/lib/${TOOLCHAIN_PREFIX}/libusb-1.0.so.0.3.0"
+  INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/libusb/usr/include/libusb-1.0"
 )
-#pkg_check_modules(libusb REQUIRED libusb-1.0)
 
 include_directories(${CMAKE_JS_INC})
 add_library(${PROJECT_NAME} SHARED
