@@ -2,7 +2,3 @@
 	path = depthai-core
 	url = https://github.com/luxonis/depthai-core
 	branch = "d29af8b0a5bbbc8fedf09d8ccfcd6bac8f30d8bc" # 2.19.0
-[submodule "external/libusb"]
-	path = external/libusb
-	url = https://github.com/libusb/libusb.git
-	branch = "4239bc3a50014b8e6a5a2a59df1fff3b7469543b" # 1.0.26
