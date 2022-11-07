@@ -33,7 +33,7 @@ HunterGate(
     FILEPATH ${CMAKE_CURRENT_LIST_DIR}/depthai-core/cmake/Hunter/config.cmake
 )
 
-project(depthai_node VERSION "0.0.1")
+project(depthai_node VERSION "0.1.0")
 
 # Add module paths
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
@@ -44,10 +44,7 @@ add_subdirectory(depthai-core)
 
 #find_package(PkgConfig REQUIRED)
 find_library(libusb-1.0 NAMES usb-1.0 PATHS
-    /usr/lib
-    /usr/local/lib
-    /opt/local/lib
-    /sw/lib
+    ./libusb/usr/lib
 )
 #pkg_check_modules(libusb REQUIRED libusb-1.0)
 
