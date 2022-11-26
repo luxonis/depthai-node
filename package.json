@@ -1,6 +1,6 @@
 {
   "name": "@luxonis/depthai-node",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Node.js DepthAI native bindings",
   "repository": "https://github.com/luxonis/depthai-node",
   "main": "index.js",
@@ -16,9 +16,8 @@
     "check-elf": "readelf -Wh depthai_node.node",
     "build": "cmake-js build",
     "move-to-root": "cp ./build/Release/depthai_node.node ./depthai_node.node",
-    "prepare-prebuilds": "yarn run clean && yarn run build && node prepare-prebuilds.js x86_64",
-    "prepare-prebuilds-arm64": "yarn run clean && yarn run build:arm64 && node prepare-prebuilds.js aarch64",
-    "build:arm64": "cmake-js build --CDCMAKE_TOOLCHAIN_FILE=./cmake/toolchain/arm64.cmake",
+    "prepare-prebuilds": "yarn run clean && yarn run build && node prepare-prebuilds.js",
+    "relocate-prebuilds": "node relocate-prebuilds.js",
     "clean": "cmake-js clean"
   },
   "packageManager": "yarn@3.2.4"
