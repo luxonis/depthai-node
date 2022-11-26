@@ -5,14 +5,17 @@ endif()
 cmake_policy(SET CMP0077 NEW)
 
 set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib)
-if (NOT CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain/pic.cmake")
-endif()
+
 if (NOT TOOLCHAIN_PREFIX)
-    set(TOOLCHAIN_PREFIX "x86_64-linux-gnu")
+    EXECUTE_PROCESS( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+    message( STATUS "Architecture: ${ARCHITECTURE}" )
+
+    set(TOOLCHAIN_PREFIX "${ARCHITECTURE}-linux-gnu")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb3")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 # For IDE
 if (NOT CMAKE_JS_VERSION)
@@ -43,13 +46,10 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/depthai-core/cmake")
 
 set(DEPTHAI_OPENCV_SUPPORT OFF CACHE BOOL "" FORCE)
+set(DEPTHAI_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(DEPTHAI_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(DEPTHAI_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 add_subdirectory(depthai-core)
-
-add_library(usb-1.0 STATIC IMPORTED)
-set_target_properties(usb-1.0 PROPERTIES
-  IMPORTED_LOCATION "${PROJECT_SOURCE_DIR}/libusb/usr/lib/${TOOLCHAIN_PREFIX}/libusb-1.0.so.0.3.0"
-  INTERFACE_INCLUDE_DIRECTORIES "${PROJECT_SOURCE_DIR}/libusb/usr/include/libusb-1.0"
-)
 
 include_directories(${CMAKE_JS_INC})
 add_library(${PROJECT_NAME} SHARED
@@ -78,7 +78,6 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_EXTENSIONS OFF)
 set(LINK_LIBRARIES
     ${CMAKE_JS_LIB}
     depthai::core
-    usb-1.0
 )
 
 if(APPLE)
@@ -87,4 +86,4 @@ elseif(UNIX)
     list(APPEND LINK_LIBRARIES -static-libgcc -static-libstdc++)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LINK_LIBRARIES} ${DEPTHAI_SHARED_LIBS})

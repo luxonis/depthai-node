@@ -1,17 +1,18 @@
-name: Build - Linux
+name: Build and publish NPM
 
 on:
   workflow_dispatch:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  NODE_VERSION: "18.5.0"
 
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-20.04
+  build:
     strategy:
       matrix:
-        node-version: ["18.5.0"]
+        runner: ["buildjet-2vcpu-ubuntu-2204", "buildjet-2vcpu-ubuntu-2204-arm"]
+    runs-on: ${{ matrix.runner }}
     permissions: 
       contents: read
       packages: write 
@@ -19,38 +20,55 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: "https://npm.pkg.github.com/"
           scope: "@luxonis"
-      - name: Prepare Cross Compile
-        run: |
-          sudo apt update
-          sudo apt install -y g++-aarch64-linux-gnu gcc-aarch64-linux-gnu
-          mkdir sysroot && cd sysroot
-          wget https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/953c2471bc7e71a788309f6c2d2003e8b703305d/debian_sid_arm64_sysroot.tar.xz        
-          tar xf debian_sid_arm64_sysroot.tar.xz
-          echo "ARM64_SYSROOT=$(pwd)" >> $GITHUB_ENV
-          ls -l
       - name: Build
         run: |
+          sudo apt-get update && sudo apt-get install -y libusb-1.0-0-dev
           yarn install
           yarn run prepare-prebuilds
-          yarn run prepare-prebuilds-arm64
           yarn run clean
         env:
           CI: true
-      - name: Test
-        run: |
-          yarn install
-          yarn run postinstall
-          yarn run test
-        env:
-          CI: true
+      - uses: actions/upload-artifact@v3
+        with:
+          name: prebuilds-${{ matrix.runner }}
+          path: prebuilds/*.node
+  
+  publish:
+    runs-on: buildjet-2vcpu-ubuntu-2204
+    needs: ["build"]
+    permissions: 
+      contents: read
+      packages: write 
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://npm.pkg.github.com/"
+          scope: "@luxonis"
+      - uses: actions/download-artifact@v3
+        with:
+          path: all-prebuilds
       - name: Publish
         run: |
-          yarn npm publish
+          echo "Prepared prebuilds..."
+          npm install
+          npm run relocate-prebuilds
+          
+          echo "Validating..."
+          npm install
+          npm run test
+
+          echo "Publishing..."
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

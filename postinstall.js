@@ -15,3 +15,10 @@ if (fs.existsSync(path.resolve('./prebuilds'))) {
     throw new Error(`prebuild not available for ${arch}`);
   }
 }
+
+const hunterConfig = path.resolve(__dirname, 'depthai-core/cmake/Hunter/config.cmake');
+if (fs.existsSync(hunterConfig)) {
+  let contents = fs.readFileSync(hunterConfig, 'utf-8');
+  contents = contents.replace('BUILD_SHARED_LIBS=ON', 'BUILD_SHARED_LIBS=OFF');
+  fs.writeFileSync(hunterConfig, contents);
+}
