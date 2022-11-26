@@ -20,5 +20,8 @@
     "relocate-prebuilds": "node relocate-prebuilds.js",
     "clean": "cmake-js clean"
   },
-  "packageManager": "yarn@3.2.4"
+  "packageManager": "yarn@3.2.4",
+  "devDependencies": {
+    "glob": "^8.0.3"
+  }
 }
