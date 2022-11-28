@@ -42,9 +42,6 @@ jobs:
           yarn install
           podman build -t depthainode-builder --build-arg "NODE_VERSION=v${NODE_VERSION}" .
           podman run --rm -v .:/app localhost/depthainode-builder:latest
-
-          yarn install
-          yarn run test
         env:
           CI: true
       - uses: actions/upload-artifact@v3
