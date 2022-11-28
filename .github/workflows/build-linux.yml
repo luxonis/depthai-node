@@ -28,10 +28,23 @@ jobs:
           scope: "@luxonis"
       - name: Build
         run: |
-          sudo apt-get update && sudo apt-get install -y libusb-1.0-0-dev
+          sudo apt-get update && sudo apt-get install -y uidmap slirp4netns dbus-user-session
+          wget -O podman.tar "https://hub-agent.luxonis.com/?podman=4.2.0&arch=$(uname -m)"
+          sudo tar -C / -xvf podman.tar --strip-components=2
+          rm -rf podman.tar
+          sudo chmod +x /usr/bin/crun
+          sudo mkdir /etc/containers || true
+          sudo cp ./resources/podman-policy.json /etc/containers/policy.json
+          sudo cp ./resources/podman-containers.conf /etc/containers/containers.conf
+          sudo chmod -R 777 /etc/containers/
+          sudo loginctl enable-linger 1000
+
           yarn install
-          yarn run prepare-prebuilds
-          yarn run clean
+          podman build -t depthainode-builder --build-arg "NODE_VERSION=v${NODE_VERSION}" .
+          podman run --rm -v .:/app localhost/depthainode-builder:latest
+
+          yarn install
+          yarn run test
         env:
           CI: true
       - uses: actions/upload-artifact@v3

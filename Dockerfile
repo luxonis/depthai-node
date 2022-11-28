@@ -1,15 +1,22 @@
-FROM node:17.3.1-bullseye-slim
+FROM docker.io/debian:bullseye-slim
 
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Prague
+RUN apt-get update && apt-get install -y curl build-essential cmake libssl-dev libusb-1.0-0-dev
 
-RUN apt-get update -q -y && \
-    apt-get install -q -y tzdata libssl-dev libusb-1.0-0-dev cmake make build-essential curl libsystemd-dev clang-format
+ARG NODE_VERSION
+ENV NVM_DIR="/root/.nvm"
 
-WORKDIR /app
+RUN curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash \
+  && . $NVM_DIR/nvm.sh \
+  && nvm install $NODE_VERSION \
+  && nvm alias default $NODE_VERSION \
+  && nvm use default
+
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+
+RUN corepack enable
+
 VOLUME /app
+WORKDIR /app
 
-ADD ./build-in-docker.sh /root/build-in-docker.sh
-RUN chmod +x /root/build-in-docker.sh
-
-ENTRYPOINT /root/build-in-docker.sh
+CMD ["npm", "run", "prepare-prebuilds"]
