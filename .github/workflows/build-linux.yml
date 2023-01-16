@@ -2,6 +2,12 @@ name: Build and publish NPM
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - main
+    - rvc3_support
+    tags:
+    - 'v*'
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -13,9 +19,9 @@ jobs:
       matrix:
         runner: ["buildjet-2vcpu-ubuntu-2204", "buildjet-2vcpu-ubuntu-2204-arm"]
     runs-on: ${{ matrix.runner }}
-    permissions: 
+    permissions:
       contents: read
-      packages: write 
+      packages: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -48,13 +54,14 @@ jobs:
         with:
           name: prebuilds-${{ matrix.runner }}
           path: prebuilds/*.node
-  
+
   publish:
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: buildjet-2vcpu-ubuntu-2204
     needs: ["build"]
-    permissions: 
+    permissions:
       contents: read
-      packages: write 
+      packages: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -73,7 +80,7 @@ jobs:
           echo "Prepared prebuilds..."
           npm install
           npm run relocate-prebuilds
-          
+
           echo "Validating..."
           npm install
           npm run test
