@@ -5,9 +5,9 @@ export declare const Build: {
   COMMIT_DATETIME: string;
 }; 
 
-export declare type XLinkDeviceState = 'unknown' | 'booted' | 'unbooted' | 'bootloader' | 'flash-booted';
+export declare type XLinkDeviceState = 'unknown' | 'booted' | 'unbooted' | 'bootloader' | 'flash-booted' | 'gate' | 'gate-booted';
 export declare type XLinkProtocol = 'usb-vsc' | 'usb-cdc' | 'pcie' | 'ipc' | 'tcp-ip' | 'nmb-of-protocols' | 'unknown';
-export declare type XLinkPlatform = 'unknown' | 'myriad-2' | 'myriad-x'
+export declare type XLinkPlatform = 'unknown' | 'myriad-2' | 'myriad-x' | 'rvc3'
 export declare type XLinkError = 
   | 'success' 
   | 'already-open' 
