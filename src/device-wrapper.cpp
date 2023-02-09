@@ -12,12 +12,12 @@ Napi::Object DeviceWrapper::Init(Napi::Env env, Napi::Object exports)
     return exports;
 }
 
-Napi::Value DeviceWrapper::getAllAvailableDevices(const Napi::CallbackInfo& info) 
+Napi::Value DeviceWrapper::getAllAvailableDevices(const Napi::CallbackInfo& info)
 {
     return DeviceWrapper::deviceInfosToNode(info.Env(), dai::Device::getAllAvailableDevices());
 }
 
-Napi::Value DeviceWrapper::getAllConnectedDevices(const Napi::CallbackInfo& info) 
+Napi::Value DeviceWrapper::getAllConnectedDevices(const Napi::CallbackInfo& info)
 {
     return DeviceWrapper::deviceInfosToNode(info.Env(), dai::Device::getAllConnectedDevices());
 }
@@ -36,7 +36,7 @@ Napi::Array DeviceWrapper::deviceInfosToNode(Napi::Env env, std::vector<dai::Dev
         nodeArray[i] = deviceInfo;
     }
     return nodeArray;
-} 
+}
 
 Napi::String DeviceWrapper::nodeEnumFromState(Napi::Env env, XLinkDeviceState_t state)
 {
@@ -49,6 +49,10 @@ Napi::String DeviceWrapper::nodeEnumFromState(Napi::Env env, XLinkDeviceState_t 
             return Napi::String::New(env, "bootloader");
         case X_LINK_FLASH_BOOTED:
             return Napi::String::New(env, "flash-booted");
+        case X_LINK_GATE:
+            return Napi::String::New(env, "gate");
+        case X_LINK_GATE_BOOTED:
+            return Napi::String::New(env, "gate-booted");
         case X_LINK_ANY_STATE:
         default:
             return Napi::String::New(env, "unknown");
@@ -83,6 +87,8 @@ Napi::String DeviceWrapper::nodeEnumFromPlatform(Napi::Env env, XLinkPlatform_t 
             return Napi::String::New(env, "myriad-2");
         case X_LINK_MYRIAD_X:
             return Napi::String::New(env, "myriad-x");
+        case X_LINK_RVC3:
+            return Napi::String::New(env, "rvc3");
         case X_LINK_ANY_PLATFORM:
         default:
             return Napi::String::New(env, "unknown");
